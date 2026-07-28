@@ -1528,8 +1528,9 @@ const _pn=_sp.get('p'); if(_pn&&P[_pn]) show(_pn);
                              % (c.get("t", ""), c.get("d", ""), c.get("b", "")))
     col_list = "".join(col_items) if col_items else '<p class="muted">첫 칼럼을 준비 중입니다.</p>'
     column_css = base_css + """
- .rina{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:0 0 20px}
- .rina .avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1f3a5f,#2e527f);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex-shrink:0}
+ .rina{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:0 0 20px}
+ .rina .rphoto{width:100%;max-height:360px;object-fit:cover;object-position:center 18%;display:block}
+ .rina .rbody{padding:16px 20px 18px}
  .rina h2{margin:0 0 4px;font-size:17px;color:var(--accent);padding:0} .rina h2::before{display:none}
  .rina p{margin:0;font-size:13.5px;line-height:1.75;color:var(--muted)}
  .rina .style{color:var(--accent-2);font-weight:600}
@@ -1553,8 +1554,8 @@ const _pn=_sp.get('p'); if(_pn&&P[_pn]) show(_pn);
 <h1>리나의 주간 리서치</h1>
 <p class="tagsub">공직자 포트폴리오 데이터에서 읽어낸 이번 주의 흐름</p>
 <div class="rina">
- <div class="avatar">RN</div>
- <div>
+ <img class="rphoto" src="rina.jpg" alt="AI 리서처 리나">
+ <div class="rbody">
   <h2>리나 (RINA) · AI 리서처</h2>
   <p>같이투자의 데이터를 매주 읽고 해설하는 AI입니다. 성향은 <span class="style">원금 보전을 중시하는 보수형이지만,
   데이터가 뒷받침되면 중위험까지 들여다보는 편</span>입니다. 종목을 추천하지 않으며, 공개 데이터가 말해주는
