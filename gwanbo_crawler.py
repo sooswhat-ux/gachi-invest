@@ -1186,8 +1186,8 @@ q.oninput=render; render();
             continue
         wcards.append(_wcard(key, title, subtitle, _wpanels(rows, lambda r: fmt_krw(r["v"]))))
     if focus:
-        wcards.append(_wcard("focus", "집중투자", "증권 신고액 중 한 종목 비중 (증권 1억원↑)",
-                             _wpanels(focus, lambda r: "%s %d%%" % (r["s"][:10], r["w"]))))
+        wcards.append(_wcard("focus", "최다 종목 보유", "국내+해외 상장주식 보유 종목 수",
+                             _wpanels(focus, lambda r: "%d종목" % r["w"])))
     switch_html = ""
     if switches:
         parts = ["<b>%s</b>를 정리하고 <b>%s</b>를 새로 담은 공직자 <b>%d명</b>" % (sk, bk, c)
@@ -1919,25 +1919,12 @@ def cmd_parse():
     switches.sort(reverse=True)
     switches = switches[:3]
 
-    # 집중투자: 증권 신고액 1억원↑ 인물 중, 시세 확보 종목 기준 한 종목 평가액/증권신고액 비중 최대치
-    focus = []
-    for p, port in person_port.items():
-        sec = person_sec.get(p)
-        if not sec or sec < 100000:      # 증권 1억원(=100,000천원) 미만 제외
-            continue
-        best = None
-        for slot in ("d", "v"):
-            for k, q in port[slot]:
-                pr = (prices.get(k) or {}).get("p2025")
-                if pr:
-                    w = q * pr / (sec * 1000.0)
-                    if best is None or w > best[0]:
-                        best = (w, k)
-        if best and best[0] >= 0.5:
-            focus.append((best[0], best[1], p))
-    focus.sort(reverse=True)
-    focus = [{"n": p, "o": _org_of(p), "s": k, "w": min(100, round(w * 100)), "pp": 1}
-             for w, k, p in focus[:10]]
+    # 최다 종목 보유: 국내+해외 상장주식 보유 종목 수 상위
+    # (※ 기존 '집중투자'(한 종목 비중)는 분자=시가·분모=신고가의 기준 불일치로 분산투자자도
+    #    100%가 되는 구조적 왜곡이 있어 폐기 — 2026-07 검증)
+    focus = sorted(((len(pp["d"]) + len(pp["v"]), nm) for nm, pp in person_port.items()),
+                   reverse=True)
+    focus = [{"n": nm, "o": _org_of(nm), "w": cnt, "pp": 1} for cnt, nm in focus[:10]]
 
     # 인물 검색 페이지용 확장 데이터: 주식 포트폴리오 + 자산 구성 + 총계 증감
     ppx = {}
