@@ -233,6 +233,16 @@ people.html은 엔터 시 재검색+첫 결과 상세 자동 오픈.
 종목 모달(`newsBox`)·인물 상세에 표시. 대상은 parse가 만드는 `news_targets.json`(상위 30×2 종목 +
 큰손/집중투자 인물). 키가 없거나 플레이스홀더면 해당 부분 건너뜀(`_valid`). api_keys.json은 배포 제외 대상.
 
+## 배포 (GitHub Pages)
+
+- **라이브 URL**: https://sooswhat-ux.github.io/gachi-invest/ (저장소 sooswhat-ux/gachi-invest, main 브랜치 루트 서빙)
+- **.gitignore 필수 제외**: `api_keys.json`(비밀키), `pdfs/`(원본 대용량), `뉴스타파 데이터/`(재배포 금지),
+  `gwanbo_index.json`, `update.log`. 커밋 전 `git status`로 민감파일 미포함 확인 습관화.
+- **자동 갱신**: `update.sh`(index→download→assembly→price→news→parse→변경 시 커밋·푸시)를
+  launchd(`~/Library/LaunchAgents/kr.gachi-invest.update.plist`)가 **매일 08:00** 실행(맥 켜져 있을 때).
+  로그: `update.log`, launchd 표준출력 `/tmp/gachi-update.{out,err}`.
+  수동 갱신: `./update.sh`. 스케줄 해제: `launchctl unload ~/Library/LaunchAgents/kr.gachi-invest.update.plist`.
+
 ## 실행 순서
 
 ```
