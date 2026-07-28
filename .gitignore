@@ -1,0 +1,11 @@
+# 비밀키 — 절대 커밋 금지
+api_keys.json
+# 원본 PDF (대용량, 재수집 가능)
+pdfs/
+# 뉴스타파 제공 데이터 — 검증 전용, 재배포 금지
+뉴스타파 데이터/
+# 로컬 부산물
+.DS_Store
+news_targets.json
+gwanbo_index.json
+.claude/

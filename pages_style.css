@@ -1,0 +1,26 @@
+/* 소개·개인정보처리방침·문의 공용 스타일 (index.html과 동일한 네이비 톤) */
+:root{--line:#dfe3ea;--muted:#5b6472;--accent:#1f3a5f;--accent-2:#2e527f;--tint:#eef2f7;--bg:#f6f7f9;--ink:#1a2230}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:720px;margin:0 auto;padding:28px 18px 60px}
+.top{margin-bottom:22px}
+.top a.home{color:var(--accent-2);text-decoration:none;font-size:13px}
+.top a.home:hover{text-decoration:underline}
+h1{font-size:22px;font-weight:700;margin:8px 0 4px;color:var(--accent);letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px;margin:0 0 22px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin-bottom:14px;line-height:1.75;font-size:14px}
+.card h2{font-size:16px;color:var(--accent);margin:0 0 10px}
+.card h2:not(:first-child){margin-top:22px}
+.card p{margin:0 0 10px}
+.card ul{margin:0 0 10px;padding-left:20px}
+.card li{margin-bottom:5px}
+.card a{color:var(--accent-2)}
+.badge{display:inline-block;padding:2px 8px;border:1px solid #cfd9e6;border-radius:6px;background:var(--tint);color:var(--accent-2);font-size:12px;font-weight:600}
+.foot{color:var(--muted);font-size:12px;margin-top:24px;border-top:1px solid var(--line);padding-top:12px;line-height:1.7}
+.foot a{color:var(--accent-2);text-decoration:none}
+.foot a:hover{text-decoration:underline}
+@media(max-width:700px){
+ .wrap{padding:18px 12px 44px}
+ h1{font-size:19px}
+ .card{padding:16px 16px}
+}
