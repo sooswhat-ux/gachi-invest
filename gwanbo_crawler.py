@@ -1342,6 +1342,7 @@ q.oninput=render; render();
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>같이투자 : 가치있는 투자를 다같이</title>
+<meta name="naver-site-verification" content="b418f5eb05d891a0eab29fdafa22d399f86d97b6" />
 <meta name="description" content="%(desc)s">
 <meta property="og:title" content="같이투자 : 가치있는 투자를 다같이">
 <meta property="og:description" content="%(desc)s">
