@@ -742,6 +742,7 @@ def build_site(domestic, overseas, prices=None, detail_dom=None, detail_ovs=None
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>종목 랭킹 · 같이투자</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9186959187584058" crossorigin="anonymous"></script>
 <meta name="description" content="__DESC__">
 <meta property="og:title" content="종목 랭킹 · 같이투자">
 <meta property="og:description" content="__DESC__">
@@ -1343,6 +1344,7 @@ q.oninput=render; render();
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>같이투자 : 가치있는 투자를 다같이</title>
 <meta name="naver-site-verification" content="b418f5eb05d891a0eab29fdafa22d399f86d97b6" />
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9186959187584058" crossorigin="anonymous"></script>
 <meta name="description" content="%(desc)s">
 <meta property="og:title" content="같이투자 : 가치있는 투자를 다같이">
 <meta property="og:description" content="%(desc)s">
@@ -1428,6 +1430,7 @@ document.querySelectorAll('[data-rot]').forEach(b=>{
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>공직자 검색 · 같이투자</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9186959187584058" crossorigin="anonymous"></script>
 <meta name="description" content="고위공직자 이름·소속으로 검색해 신고 재산 총액, 전년 대비 증감, 자산 구성, 주식 포트폴리오를 확인합니다.">
 <style>%(css)s</style></head><body><div class="wrap">
 %(nav)s
