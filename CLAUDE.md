@@ -233,6 +233,21 @@ people.html은 엔터 시 재검색+첫 결과 상세 자동 오픈.
 종목 모달(`newsBox`)·인물 상세에 표시. 대상은 parse가 만드는 `news_targets.json`(상위 30×2 종목 +
 큰손/집중투자 인물). 키가 없거나 플레이스홀더면 해당 부분 건너뜀(`_valid`). api_keys.json은 배포 제외 대상.
 
+## 칼럼 (리나의 주간 리서치)
+
+- `columns.json`([{d,t,b(HTML)}] 최신순) → build_site가 `column.html` 생성(리나 캐릭터 카드 +
+  최신 글 전문 + 이전 글 details 접기 + AI·비권유 고지). 내비 '칼럼' 메뉴.
+- **자동 발행**: `weekly_column.sh`(claude CLI 헤드리스가 최신 데이터 읽고 새 칼럼을 columns.json에
+  추가 → parse → push)를 launchd `kr.gachi-invest.column.plist`가 **매주 월 09:00** 실행.
+- 원칙: 종목 추천 금지, 검증된 수치만 인용, 데이터 해설 톤(유사투자자문 리스크 회피).
+
+## 폐기된 지표 (재도입 금지 사유)
+
+- **집중투자(한 종목 비중)**: 분자=시가평가, 분모=증권 신고가액(취득가)으로 기준이 달라
+  분산투자자도 100%로 표시되는 구조적 왜곡(박정훈: 28종목 분산인데 4,308%→100% 캡).
+  '최다 종목 보유'(종목 수)로 대체함. 비중 지표를 되살리려면 분모도 시가평가 합으로 통일하고
+  가격 미확보 종목 비중이 낮은 인물로 한정해야 함.
+
 ## 배포 (GitHub Pages)
 
 - **라이브 URL**: https://sooswhat-ux.github.io/gachi-invest/ (저장소 sooswhat-ux/gachi-invest, main 브랜치 루트 서빙)
