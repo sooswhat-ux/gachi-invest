@@ -690,7 +690,8 @@ NAV_CSS = (" .topnav{display:flex;gap:4px;margin:0 0 18px;flex-wrap:wrap}"
 def _nav(active):
     """상단 공용 내비게이션. active: 'home'|'stocks'|'people'"""
     items = [("home", "index.html", "홈"), ("stocks", "stocks.html", "종목 랭킹"),
-             ("people", "people.html", "공직자 검색"), ("", "about.html", "소개")]
+             ("people", "people.html", "공직자 검색"), ("column", "column.html", "칼럼"),
+             ("", "about.html", "소개")]
     return '<nav class="topnav">' + "".join(
         '<a href="%s"%s>%s</a>' % (href, ' class="on"' if key == active else "", label)
         for key, href, label in items) + "</nav>"
@@ -1513,7 +1514,62 @@ const _pn=_sp.get('p'); if(_pn&&P[_pn]) show(_pn);
     people_html = people_html.replace("__PNEWS__", json.dumps(
         {"people": newsdata.get("people", {}), "updated": newsdata.get("updated")}, ensure_ascii=False))
 
-    return {"index": index_html, "stocks": stocks_html, "people": people_html}
+    # ── ④ 칼럼 페이지 (column.html) — AI 리서처 '리나'의 주간 데이터 해설 ──
+    columns = (json.load(open("columns.json", encoding="utf-8"))
+               if os.path.exists("columns.json") else [])
+    col_items = []
+    for i, c in enumerate(columns):
+        body = '<div class="colhead"><span class="coldate">%s</span></div><h2 class="coltitle">%s</h2>%s' % (
+            c.get("d", ""), c.get("t", ""), c.get("b", ""))
+        if i == 0:
+            col_items.append('<article class="colcard">%s</article>' % body)
+        else:
+            col_items.append('<details class="colcard colprev"><summary>%s <span class="coldate">%s</span></summary>%s</details>'
+                             % (c.get("t", ""), c.get("d", ""), c.get("b", "")))
+    col_list = "".join(col_items) if col_items else '<p class="muted">첫 칼럼을 준비 중입니다.</p>'
+    column_css = base_css + """
+ .rina{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:0 0 20px}
+ .rina .avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1f3a5f,#2e527f);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex-shrink:0}
+ .rina h2{margin:0 0 4px;font-size:17px;color:var(--accent);padding:0} .rina h2::before{display:none}
+ .rina p{margin:0;font-size:13.5px;line-height:1.75;color:var(--muted)}
+ .rina .style{color:var(--accent-2);font-weight:600}
+ .colcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:14px;font-size:14.5px;line-height:1.9}
+ .colcard .coldate{color:var(--muted);font-size:12.5px}
+ .coltitle{font-size:19px;color:var(--accent);margin:4px 0 14px;padding:0} .coltitle::before{display:none}
+ .colcard p{margin:0 0 12px} .colcard b{color:var(--accent)}
+ .colcard ul{margin:0 0 12px;padding-left:20px} .colcard li{margin-bottom:5px}
+ details.colprev summary{cursor:pointer;font-weight:700;color:var(--accent);font-size:15.5px}
+ details.colprev[open] summary{margin-bottom:12px}
+ .disclaim{background:var(--tint);border:1px solid #d6e0ee;border-radius:10px;padding:12px 15px;font-size:12.5px;color:var(--muted);line-height:1.8;margin-top:18px}
+"""
+    column_html = """<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>칼럼 · 같이투자</title>
+<meta name="description" content="AI 리서처 리나가 매주 공직자 재산공개 데이터에서 읽어낸 흐름을 해설합니다. 투자 권유가 아닌 데이터 해설 칼럼입니다.">
+%(ads)s
+<style>%(css)s</style></head><body><div class="wrap">
+%(nav)s
+<h1>리나의 주간 리서치</h1>
+<p class="tagsub">공직자 포트폴리오 데이터에서 읽어낸 이번 주의 흐름</p>
+<div class="rina">
+ <div class="avatar">RN</div>
+ <div>
+  <h2>리나 (RINA) · AI 리서처</h2>
+  <p>같이투자의 데이터를 매주 읽고 해설하는 AI입니다. 성향은 <span class="style">원금 보전을 중시하는 보수형이지만,
+  데이터가 뒷받침되면 중위험까지 들여다보는 편</span>입니다. 종목을 추천하지 않으며, 공개 데이터가 말해주는
+  것과 말해주지 않는 것을 구분해 전하는 것이 제 일입니다.</p>
+ </div>
+</div>
+%(cols)s
+<div class="disclaim">본 칼럼은 공직자윤리법에 따라 공개된 재산 데이터에 대한 <b>해설·논평</b>이며,
+특정 종목의 매수·매도를 권유하지 않습니다. 리나(RINA)는 AI이며, 글은 발행 시점의 공개 데이터를 기반으로
+자동 작성 후 게시됩니다. 투자 판단과 책임은 이용자 본인에게 있습니다.</div>
+%(foot)s
+</div></body></html>""" % {"css": column_css, "nav": _nav("column"), "cols": col_list, "foot": foot_html,
+                           "ads": '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9186959187584058" crossorigin="anonymous"></script>'}
+
+    return {"index": index_html, "stocks": stocks_html, "people": people_html, "column": column_html}
 
 
 # ── 상세 파싱 공용 정규식/헬퍼 (cmd_parse 및 검증 스크립트가 공유) ──
@@ -1532,6 +1588,37 @@ _NUMTOK = re.compile(r"\d{1,3}(?:,\d{3})+|\d+")
 def split_glued_nums(s):
     """'129,604,7702,544,93317,818,770114,330,933' → ['129,604,770','2,544,933','17,818,770','114,330,933']"""
     return _NUMTOK.findall(s or "")
+
+
+def split4_by_identity(s):
+    """붙은 4컬럼 금액(종전·증가·감소·현재)을 항등식 a+b-c=d 로 복원.
+    콤마 복원만으로는 '0' 컬럼이 경계를 파괴하거나(894,209|6,627|0|900,836)
+    콤마 자체가 소실된 장숫자를 못 다루므로, 전수 4분할 중 항등식을 만족하는
+    분할을 찾는다. 콤마 패턴과 정확히 일치하는 해가 있으면 우선. 실패 시 None."""
+    digits = re.sub(r"[^\d]", "", s or "")
+    if not digits or len(digits) < 4 or len(digits) > 34:
+        return None
+    # 콤마가 전혀 없는 장숫자는 분할 근거가 없어 임의 해 위험 → 스킵(전부 0이면 예외)
+    if "," not in (s or "") and set(digits) != {"0"}:
+        return None
+    n = len(digits)
+    cands = []
+    for i in range(1, n - 2):
+        for j in range(i + 1, n - 1):
+            for k in range(j + 1, n):
+                p = (digits[:i], digits[i:j], digits[j:k], digits[k:])
+                if any(len(x) > 1 and x[0] == "0" for x in p):
+                    continue
+                a, b, c, d = (int(x) for x in p)
+                if a + b - c == d:
+                    cands.append((a, b, c, d))
+    if not cands:
+        return None
+    orig = re.sub(r"\s", "", s or "")
+    for t in cands:
+        if "".join(format(x, ",") for x in t) == orig:
+            return t
+    return cands[0]
 
 
 # 종목 나열 뒤에 공백 후 10자리 이상 콤마숫자 덩어리(붙은 금액 컬럼)가 오면 거기서 컷 (국회공보용)
@@ -1641,6 +1728,7 @@ def cmd_parse():
         except Exception as e:
             print("  PDF 열기 실패:", fn, e); continue
         org = pos = person = fn
+        four_col = True
         for p in r.pages:
             t = p.extract_text() or ""
             blob = t.replace("\n", " ")
@@ -1664,19 +1752,36 @@ def cmd_parse():
                 def _n(s):
                     return 0 if s == "-" else int(s.replace(",", ""))
                 matched = set()
+                # 정기형(4컬럼)/최초등록형(1컬럼) 판별 — 표가 여러 페이지에 걸치므로 페이지가 아닌
+                # '사람' 단위 상태로 유지: 헤더('종전가액')가 보이면 4컬럼, 새 사람 시작인데 없으면 1컬럼,
+                # 연속 페이지(헤더 없음)는 직전 상태 유지.
+                if "종전가액" in blob:
+                    four_col = True
+                elif hd:
+                    four_col = False
                 for m in SUBTOT.finditer(blob):
                     cat = m.group(1).replace(" ", "")
                     person_assets[person][cat] = _n(m.group(2))
                     matched.add(cat)
-                for m in SUBTOT2.finditer(blob):     # 국회공보(붙은 금액)·수시 최초등록(1컬럼) 폴백
+                for m in SUBTOT2.finditer(blob):     # 붙은 금액(국회공보)·1컬럼(최초등록) 폴백
                     cat = m.group(1).replace(" ", "")
                     if cat in matched:
                         continue
-                    toks = split_glued_nums(m.group(2))
-                    if len(toks) >= 4:
-                        person_assets[person][cat] = _n(toks[3])
-                    elif len(toks) == 1:              # 최초등록형: 소계 = 현재가액 1개
-                        person_assets[person][cat] = _n(toks[0])
+                    raw = m.group(2)
+                    toks = split_glued_nums(raw)
+                    val = None
+                    if four_col:
+                        # 항등식(종전+증가-감소=현재)으로 분할 검증·복원
+                        q = split4_by_identity(raw)
+                        if q:
+                            val = q[3]
+                        elif len(toks) >= 4:
+                            val = _n(toks[3])
+                    else:
+                        if len(toks) == 1:
+                            val = _n(toks[0])
+                    if val is not None:
+                        person_assets[person][cat] = val
                 tm = TOTALROW.search(blob)
                 if tm:
                     person_assets[person]["_prev"] = _n(tm.group(1))
@@ -1684,10 +1789,16 @@ def cmd_parse():
                 else:
                     tm2 = TOTALROW2.search(blob)
                     if tm2:
-                        toks = split_glued_nums(tm2.group(1))
-                        if len(toks) >= 4:
-                            person_assets[person]["_prev"] = _n(toks[0])
-                            person_assets[person]["_now"] = _n(toks[3])
+                        raw = tm2.group(1)
+                        toks = split_glued_nums(raw)
+                        if four_col:
+                            q = split4_by_identity(raw)
+                            if q:
+                                person_assets[person]["_prev"] = q[0]
+                                person_assets[person]["_now"] = q[3]
+                            elif len(toks) >= 4:
+                                person_assets[person]["_prev"] = _n(toks[0])
+                                person_assets[person]["_now"] = _n(toks[3])
                         elif len(toks) == 1:          # 최초등록형: 총계 1개(전년 없음)
                             person_assets[person]["_now"] = _n(toks[0])
                 person_loose[person] = (_nofile(org), _nofile(pos))
@@ -1906,7 +2017,8 @@ def cmd_parse():
                        focus=focus, ppx=ppx, ndocs=len(files))
     for fname, content in (("index.html", pages["index"]),
                            ("stocks.html", pages["stocks"]),
-                           ("people.html", pages["people"])):
+                           ("people.html", pages["people"]),
+                           ("column.html", pages["column"])):
         open(fname, "w", encoding="utf-8").write(content)
 
     # 뉴스 수집 대상(상위 30종목×2 + 큰손/집중투자 인물) → cmd_news 가 사용
